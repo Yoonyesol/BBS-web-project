@@ -16,10 +16,24 @@
 </head>
 <body>
 	<% 
+		//로그인된 유저는 로그인 및 회원가입 페이지에 들어갈 수 없게 함
+		String userID = null;
+		if(session.getAttribute("userID") != null){ //로그인 세션을 가지고 있다면
+			userID = (String)session.getAttribute("userID"); //세션값을 가질수 있게 함
+		}
+		if(userID != null){ //이미 로그인 한 유저는 또다시 로그인을 할 수 없음
+			PrintWriter script = response.getWriter();
+			script.println("<script>");
+			script.println("alert('이미 로그인 되어 있습니다.')");
+			script.println("location.href = 'main.jsp'");
+			script.println("</script>");
+		}
+		
 		UserDAO userDAO = new UserDAO();
 		//로그인 시도
 		int result = userDAO.login(user.getUserID(), user.getUserPassword());
 		if(result == 1){
+			session.setAttribute("userID", user.getUserID()); //로그인 한 사용자에게 세션 부여
 			PrintWriter script = response.getWriter();
 			script.println("<script>");
 			script.println("location.href = 'main.jsp'");
@@ -42,10 +56,7 @@
 			script.println("alert('데이터베이스 오류가 발생했습니다.')");
 			script.println("history.back()");
 			script.println("</script>");
-		}
-		
+		}		
 	%>
-	
-	
 </body>
 </html>
