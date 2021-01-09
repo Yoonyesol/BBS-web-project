@@ -1,5 +1,8 @@
 ## BBS-project
 
+### JSP 게시판 만들기 강좌 (JSP Advanced Development Tutorial)
+<a>https://youtube.com/playlist?list=PLRx0vPvlEmdAZv_okJzox5wj2gG_fNh_6</a>
+
 ### 6강 - 회원가입 기능 구현하기 오류 해결  
 이미 존재하는 아이디입니다 오류 해결(아예 데이터베이스에 입력 자체가 안됨)  
 DRIVER TEST CLASS 만들고 실행해서 드라이버 연결은 되어 있음을 확인  
@@ -10,6 +13,7 @@ DRIVER TEST CLASS 만들고 실행해서 드라이버 연결은 되어 있음을
 String dbURL = "jdbc:mysql://localhost:3306/BBS?characterEncoding=UTF-8&serverTimezone=UTC"; 
 3. JDBC 드라이버를 MYSQL버전과 맞게 다시 설치(압축 파일은 현재 코드 짜기 진행중인 자바 프로젝트 가장 상위 폴더 아래에 풀었음) 
 ->오류 잡음. 데이터베이스에 입력 성공.    
+
 이제 데이터베이스 입력 후 joinAction페이지에서 백지로 멈춰 있는 오류 생김  
 ->joinAction.jsp 파일에서 마지막 else if(result==0){...} 을 else로 바꿈.  
 회원가입이 안되는 부분만 예외(result == 1)로 두고, 
