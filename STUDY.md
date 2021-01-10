@@ -3,7 +3,6 @@
 ### main.jsp   
 <pre>
 <code>
-<!-- 반응형 웹의 메타 택 -->
 <meta name="viewport" content="width=device-width" initial-scale="1">
 </code>
 </pre>   
