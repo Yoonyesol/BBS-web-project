@@ -20,6 +20,6 @@
 ```  
 * 세션: 웹 서버 쪽의 웹 컨테이너에 상태를 유지하기 위한 정보를 저장. 웹 브라우저 당 1개씩 생성되어 웹 컨테이너에 저장된다.   
 * session.getAttribute("userID")   
-	- getAttribute(String name): 세션 속성명이 name인 속성의 값을 Object 타입으로 리턴한다. 해당 되는 속성명이 없을 경우에는 null 값을 리턴한다.
+	- getAttribute(String name): 세션 속성명이 name인 속성의 값을 Object 타입으로 리턴한다. 해당 되는 속성명이 없을 경우에는 null 값을 리턴한다.   
 출처: [개발이 하고 싶어요](https://hyeonstorage.tistory.com/125)   
 
