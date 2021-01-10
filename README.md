@@ -18,4 +18,11 @@ String dbURL = "jdbc:mysql://localhost:3306/BBS?characterEncoding=UTF-8&serverTi
 이제 데이터베이스 입력 후 joinAction페이지에서 백지로 멈춰 있는 오류 생김  
 ->joinAction.jsp 파일에서 마지막 else if(result==0){...} 을 else로 바꿈.  
 회원가입이 안되는 부분만 예외(result == 1)로 두고, 
-회원가입 후 메인.jsp로 넘어가는 경로를 걸리는 부분이 없이 클린하게 만들어 해결. 유튜브의 댓글 참조함. 
+회원가입 후 메인.jsp로 넘어가는 경로를 걸리는 부분이 없이 클린하게 만들어 해결. 유튜브의 댓글 참조함.   
+   
+추가할 사항 
+1. 부트스트랩 페이지네이션 기능   
+2. 게시물 검색 기능   
+3. 조회수 기능   
+
+
