@@ -1,9 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@ page import="java.io.PrintWriter"%>
-<%@ page import="bbs.BbsDAO"%>
+<%@ page import="java.io.PrintWriter"%>
 <%@ page import="bbs.Bbs"%>
-<%@ page import="java.util.ArrayList"%> <!-- 게시판 목록 출력하기 위해 필요 -->
+<%@ page import="bbs.BbsDAO"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,23 +12,25 @@
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/custom.css">
 <title>JSP 게시판 웹 사이트</title>
-<style type="text/css">
-	a, a:hover {
-		color: #000000; 
-		text-decoration: none;
-	}
-</style>
 </head>
 <body>
-	<%  //로그인이 된 경우 로그인 정보를 담을 수 있게 해주는 코드
+	<%  
 		String userID = null;
 		if(session.getAttribute("userID") != null){
 			userID = (String) session.getAttribute("userID");
 		}
-		int pageNumber = 1;  //기본 페이지
-		if(request.getParameter("pageNumber") != null){  //파라미터로 pageNumber가 넘어온다면
-			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+		int bbsID = 0;
+		if(request.getParameter("bbsID") != null){  //매개변수로 넘어온 bbsID라는 id가 존재한다면
+			bbsID = Integer.parseInt(request.getParameter("bbsID"));
 		}
+		if(bbsID == 0){  //번호가 존재하지 않을 시 글을 볼 수 없다.
+			PrintWriter script = response.getWriter();
+	    	script.println("<script>");
+	    	script.println("alert('유효하지 않은 글입니다.')");
+	    	script.println("location.href = 'bbs.jsp'");
+	    	script.println("</script>");
+		}
+		Bbs bbs = new BbsDAO().getBbs(bbsID);  //유효한 글이라면, 글의 구체적인 정보를 받아올 수 있도록 인스턴스 생성
 	%>
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
@@ -84,41 +85,42 @@
 		<table class="table table-striped" style="text-align: center; border: 1px solid #dddddd">
 			<thead>
 				<tr>
-					<th style="background-color: #eeeeee; text-align: center;">번호</th>
-					<th style="background-color: #eeeeee; text-align: center;">제목</th>
-					<th style="background-color: #eeeeee; text-align: center;">작성자</th>
-					<th style="background-color: #eeeeee; text-align: center;">작성일</th>
+					<th colspan="3" style="background-color: #eeeeee; text-align: center;">게시판 글 보기 양식</th>
 				</tr>
 			</thead>
 			<tbody>
-				<% 
-					BbsDAO bbsDAO = new BbsDAO();  //새로운 인스턴스 생성
-					ArrayList<Bbs> list = bbsDAO.getList(pageNumber);  //현재 페이지에서 가져온 리스트 목록
-					for(int i = 0; i < list.size(); i++){
-				%>
 				<tr>	
-					<td><%= list.get(i).getBbsID() %></td>
-					<td><a href="view.jsp?bbsID=<%= list.get(i).getBbsID() %>"><%=list.get(i).getBbsTitle().replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") %></a></td>
-					<td><%= list.get(i).getUserID() %></td>
-					<td><%= list.get(i).getBbsDate().substring(0, 11) + list.get(i).getBbsDate().substring(11, 13) + "시" + list.get(i).getBbsDate().substring(14, 16) + "분" %></td>
-				</tr>		
-				<% 		
-					}
-				%>
+					<td style="width: 20%;">글 제목</td>
+					<td colspan="2"><%= bbs.getBbsTitle().replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") %></td>
+					<!-- 글 제목에 특수문자 처리 해 주지 않을 시 스크립트 문장을 그대로 인식해 실행되므로 해킹수단으로 사용될 수 있음.(크로스 사이트 스크립팅 공격) 반드시 특수문자 처리해 줄것 -->
+				</tr>
+				<tr>	
+					<td>작성자</td>
+					<td colspan="2"><%= bbs.getUserID() %></td>
+				</tr>
+				<tr>	
+					<td>작성일자</td>
+					<td colspan="2"><%= bbs.getBbsDate().substring(0, 11) + bbs.getBbsDate().substring(11, 13) + "시" + bbs.getBbsDate().substring(14, 16) + "분" %></td>
+				</tr>
+				<tr>	
+					<td>내용</td>
+					<td colspan="2"> 
+						<div class="bbs-content" style="min-height: 200px; text-align: left;"><%= bbs.getBbsContent().replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>") %></div>
+						<!-- 안에 div 생성해서 style 속성을 적용해주어야 더 안정적. div없이 td에 스타일 적용시 크롬, 파이어폭스에서 적용되지 않는 문제 발생가능 -->
+					</td>			
+				</tr>
 			</tbody>
 		</table>
+		<a href="bbs.jsp" class="btn btn-primary">목록</a>
 		<%
-			if(pageNumber != 1){
+			if(userID != null && userID.equals(bbs.getUserID())){  //해당 글의 작성자가 유저아이디와 동일하다면
 		%>
-			<a href="bbs.jsp?pageNumber=<%= pageNumber - 1 %>" class="btn btn-success btn-arraw-left">이전</a>
-		<%		
-			} if(bbsDAO.nextPage(pageNumber)){
-		%>
-				<a href="bbs.jsp?pageNumber=<%= pageNumber + 1 %>" class="btn btn-success btn-arraw-left">다음</a>
-		<%			
+				<a href="update.jsp?bbsID=<%= bbsID %>" class="btn btn-primary">수정</a>
+				<a onclick="return confirm('정말로 삭제하시겠습니까?')" href="deleteAction.jsp?bbsID=<%= bbsID %>" class="btn btn-primary">삭제</a>
+		<%
 			}
 		%>
-		<a href="write.jsp" class="btn btn-primary pull-right">글쓰기</a>
+		<input type="submit" class="btn btn-primary pull-right" value="글쓰기">	
 	</div>
 	<!-- 애니메이션 담당 js 참조 -->
 	<script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>

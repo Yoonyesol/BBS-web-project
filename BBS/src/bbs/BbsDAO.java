@@ -108,4 +108,52 @@ public class BbsDAO {
 		}
 		return false;  //다음 글이 존재하지 않는 경우 false 반환
 	}
+	
+	public Bbs getBbs(int bbsID) {  //게시물을 불러오는 함수
+		String SQL = "SELECT * FROM BBS WHERE bbsID = ?";  //bbsID가 특정 숫자인 경우 동작 
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(SQL); 
+			pstmt.setInt(1, bbsID);  //bbsID가 특정 값인 경우
+			rs = pstmt.executeQuery();
+			if(rs.next()) {  //해당 글이 존재하는 경우
+				Bbs bbs = new Bbs();
+				bbs.setBbsID(rs.getInt(1));
+				bbs.setBbsTitle(rs.getString(2));
+				bbs.setUserID(rs.getString(3));
+				bbs.setBbsDate(rs.getString(4));
+				bbs.setBbsContent(rs.getString(5));
+				bbs.setBbsAvailable(rs.getInt(6));
+				return bbs;  //bbs인스턴스 그대로 반환
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;  //해당 글이 존재하지 않는 경우
+	}
+	
+	public int update(int bbsID, String bbsTitle, String bbsContent) {
+		String SQL = "UPDATE BBS SET bbsTitle = ?, bbsContent = ? WHERE	bbsID = ?"; 
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(SQL); 
+			pstmt.setString(1, bbsTitle);
+			pstmt.setString(2, bbsContent);
+			pstmt.setInt(3, bbsID);
+			return pstmt.executeUpdate(); //성공 시 0이상의 결과를 반환
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1; //db오류
+	}
+	
+	public int delete(int bbsID) {
+		String SQL = "UPDATE BBS SET bbsAvailable = 0 WHERE bbsID = ?"; 
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(SQL); 
+			pstmt.setInt(1, bbsID);
+			return pstmt.executeUpdate(); //성공 시 0이상의 결과를 반환
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1; //db오류
+	}
 }
