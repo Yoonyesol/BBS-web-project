@@ -22,4 +22,11 @@
 * session.getAttribute("userID")   
 	- getAttribute(String name): 세션 속성명이 name인 속성의 값을 Object 타입으로 리턴한다. 해당 되는 속성명이 없을 경우에는 null 값을 리턴한다.   
 * 출처: [개발이 하고 싶어요](https://hyeonstorage.tistory.com/125)   
-
+```
+<button type="button" class="navbar-toggle collapsed"
+	data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+	aria-expanded="false">
+```
+* Collapse: 제목을 클릭하면 해당 내용이 펼쳐지고 다른 내용은 접히는 특수 효과
+* data-toggle : "collapse"로 설정 (a태그)
+* aria-expanded : 웹 접근성 측면에서 열린 부분은 true, 닫힌부분은 false
